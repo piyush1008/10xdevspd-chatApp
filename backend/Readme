@@ -1,0 +1,25 @@
+1. To connect to a room client will send this payload
+
+{
+    "type":"join",
+    "payload":{
+        "roomID":"123"
+    }
+}
+2. send a message  client will send this payload
+{
+    type: chat,
+    payload:{
+        message: "hii there"
+    }
+}
+
+
+server can send
+
+{
+    type: "chat",
+    "payload":{
+        message: 'hii there'
+    }
+}
