@@ -7,7 +7,7 @@ function App() {
   const [socket,setSocket]=useState<WebSocket | null>(null);
   const inputRef=useRef("");
 
-  const [messages, setMessage]=useState([]);
+  const [messages, setMessage]=useState<String[]>([]);
 
   useEffect(()=>{
     const ws=new WebSocket("ws://localhost:8080");
