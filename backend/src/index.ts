@@ -1,5 +1,8 @@
 import { WebSocketServer,WebSocket } from "ws";
-
+import express from "express"
+import { user } from "./schema/UserSchema";
+import bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
 const wss=new WebSocketServer({port:8080})
 
@@ -30,6 +33,73 @@ let allSocket:User[]=[];
     socket: "socket1", room: room1
     ]
 */
+
+
+const app=express();
+
+app.use(express.json());
+
+app.get("/signup",async (req,res)=>{
+    try {
+        const {username, password, name}=req.body;
+        const result=await user.findOne({
+            username:username
+        })
+        if(result)
+        {
+            return res.status(401).json({
+                message: "username already exist"
+            })
+        }
+        const hashpassword=await bcrypt.hash(password,10);
+        await user.create({
+            username, 
+            password:hashpassword, 
+            name
+        })
+
+        return res.status(200).json({
+            mesage: "sinup done successfully"
+        })
+
+    } catch (error) {
+        
+    }
+})
+
+app.get("/signin",async (req,res)=>{
+    try {
+        const {username, password, name}=req.body;
+        const result=await user.findOne({
+            username:username
+        })
+        if(!result)
+        {
+            return res.status(401).json({
+                message: "Please sign up first"
+            })
+        }
+         const hashpassword=await bcrypt.hash(password,10);
+       const passwordCompare=await bcrypt.compare(password, hashpassword)
+
+        if(!passwordCompare)
+        {
+            return res.status(401).json({
+                mesage: "password incorrect"
+            })
+        }
+
+        const token= jwt.sign({_id:result._id},"mysecretjson");
+
+        return res.status(200).json({
+            mesage: "sinup done successfully",
+            token
+        })
+
+    } catch (error) {
+        
+    }
+})
 wss.on("connection",(socket)=>{
     
     console.log("connection established");
