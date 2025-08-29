@@ -96,8 +96,10 @@ app.get("/signin",async (req,res)=>{
             token
         })
 
-    } catch (error) {
-        
+    } catch (error:any) {
+        return res.status(500).json({
+            message: error.mesage
+        })
     }
 })
 wss.on("connection",(socket)=>{
