@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 
 
 const UserSchema=new Schema({
-    username: {
+    email: {
       type: String, 
       require: true,
       unique: true
@@ -11,7 +11,7 @@ const UserSchema=new Schema({
        type: String, 
        require: true
     },
-    name: {
+    username: {
        type: String, 
        require: true
     }

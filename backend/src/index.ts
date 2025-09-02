@@ -3,6 +3,8 @@ import express from "express"
 import { user } from "./schema/UserSchema";
 import bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+import cors from "cors";
+import { DB } from "./db";
 
 const wss=new WebSocketServer({port:8080})
 
@@ -33,17 +35,19 @@ let allSocket:User[]=[];
     socket: "socket1", room: room1
     ]
 */
-
+DB();
 
 const app=express();
 
 app.use(express.json());
+app.use(cors());
 
-app.get("/signup",async (req,res)=>{
+
+app.post("/signup",async (req,res)=>{
     try {
-        const {username, password, name}=req.body;
+        const {username, password, email}=req.body;
         const result=await user.findOne({
-            username:username
+            email:email        
         })
         if(result)
         {
@@ -55,23 +59,26 @@ app.get("/signup",async (req,res)=>{
         await user.create({
             username, 
             password:hashpassword, 
-            name
+            email
         })
 
         return res.status(200).json({
             mesage: "sinup done successfully"
         })
 
-    } catch (error) {
-        
+    } catch (error:any) {
+        return res.status(500).json({
+            error: error.message
+        })
     }
 })
 
-app.get("/signin",async (req,res)=>{
+app.post("/signin",async (req,res)=>{
     try {
-        const {username, password, name}=req.body;
+        const {password, email}=req.body;
+        console.log(`email is ${email} and password is ${password}`)
         const result=await user.findOne({
-            username:username
+            email:email
         })
         if(!result)
         {
@@ -90,9 +97,10 @@ app.get("/signin",async (req,res)=>{
         }
 
         const token= jwt.sign({_id:result._id},"mysecretjson");
+        console.log(token)
 
         return res.status(200).json({
-            mesage: "sinup done successfully",
+            mesage: "sigin  done successfully",
             token
         })
 
@@ -101,6 +109,36 @@ app.get("/signin",async (req,res)=>{
             message: error.mesage
         })
     }
+})
+
+
+
+app.post("/me",(req,res)=>{
+    const token=req.body.token;
+    if(!token)
+    {
+        return res.status(401).json({
+            message: "please login first"
+        })
+    }
+    return res.status(200).json({
+        message: "user is already logged in"
+    })
+})
+
+app.post("/logout",(req,res)=>{
+    const token=req.body.token;
+    if(!token)
+    {
+        return res.status(401).json({
+            message: "please login first"
+        })
+    }
+
+    
+    return res.status(200).json({
+        message: "user is already logged in"
+    })
 })
 wss.on("connection",(socket)=>{
     
@@ -150,6 +188,11 @@ wss.on("connection",(socket)=>{
     })
 
 
+})
+
+
+app.listen(3000,()=>{
+    console.log("Server is running on port 3000")
 })
 
 
