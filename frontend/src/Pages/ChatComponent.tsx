@@ -23,11 +23,12 @@ function ChatComponent() {
   }
   
   const [messages, setMessage]=useState<Message[]>([]);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user,isLoading } = useAuth();
 
   // Redirect if user is not authenticated
   useEffect(() => {
-    if (!isAuthenticated) {
+    console.log("refresh happen")
+    if (!isLoading && !isAuthenticated) {
       navigate("/signin");
     }
   }, [isAuthenticated, navigate]);

@@ -1,3 +1,5 @@
-Add the logic to ask the user to create a room or join a already exisiting room.
-make a UI more cleaner
+Add the logic to ask the user to create a room or join a already exisiting room. [Done]
+make a UI more cleaner [Done]
 
+1.Create a options to let user see all the participants in a room.\
+2.Right now we are storing user data , in the localstorage to fetch the username and show in the chat , Is this a safe approach or can we implement something else

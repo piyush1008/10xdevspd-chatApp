@@ -79,7 +79,8 @@ export default function Signup() {
             })
             console.log("user sign up successfully")
 
-            // If backend returns token on signup, log the user in and go home
+            // If backend returns token on signup, log the user in and go home  but this will not be used as we are not creating any token 
+            //when user do signup. 
             if (res.data?.token) {
                 localStorage.setItem("token", res.data.token);
                 login(res.data.token, res.data.user);

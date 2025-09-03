@@ -63,7 +63,7 @@ let usercount = 0;
 let allSocket = [];
 /*
     [
-    socket: "socket1", room : room1,
+    socket: "socket1", room : room1, , username : username
     socket: "socket2", room : room2,
     socket: "socket1", room: room1
     ]
@@ -89,10 +89,9 @@ app.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             password: hashpassword,
             email
         });
-        const token = jwt.sign({ _id: newUser._id }, "mysecretjson");
+        // const token = jwt.sign({_id: newUser._id}, "mysecretjson");
         return res.status(200).json({
             mesage: "sinup done successfully",
-            token,
             user: {
                 _id: newUser._id,
                 username: newUser.username,
@@ -127,7 +126,7 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const token = jwt.sign({ _id: result._id }, "mysecretjson");
         console.log(token);
         return res.status(200).json({
-            mesage: "sigin  done successfully",
+            mesage: "signin  done successfully",
             token,
             user: {
                 _id: result._id,
