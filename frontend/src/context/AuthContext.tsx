@@ -12,7 +12,6 @@ type AuthContextValue = {
   user: User | null;
   login: (token: string, userData: User) => void;
   logout: () => void;
-  isLoading: boolean
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -20,7 +19,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading , setLoading]=useState<boolean>(true);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -43,7 +41,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await response.json();
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
-        setLoading(false)
       } else {
         // Token is invalid, clear it
         logout();
@@ -69,7 +66,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.log(existingUser)
           const userData = JSON.parse(existingUser);
           setUser(userData);
-          setLoading(false)
         } catch (error) {
           console.error("Error parsing user data from localStorage:", error);
           // If parsing fails, remove the corrupted data and fetch fresh data
@@ -87,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(userData);
   };
 
-  const value = useMemo(() => ({ isAuthenticated: !!token, token, user, login, logout,isLoading}),
+  const value = useMemo(() => ({ isAuthenticated: !!token, token, user, login, logout }),
     [token, user]
   );
 

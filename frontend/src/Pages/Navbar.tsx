@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-bold hidden sm:block">ChatApp</span>
+              <span className="text-xl font-bold hidden sm:block">Grooply</span>
             </Link>
           </div>
 

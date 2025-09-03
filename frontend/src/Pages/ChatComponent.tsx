@@ -23,12 +23,12 @@ function ChatComponent() {
   }
   
   const [messages, setMessage]=useState<Message[]>([]);
-  const { isAuthenticated, user,isLoading } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   // Redirect if user is not authenticated
   useEffect(() => {
     console.log("refresh happen")
-    if (!isLoading && !isAuthenticated) {
+    if (!isAuthenticated) {
       navigate("/signin");
     }
   }, [isAuthenticated, navigate]);
@@ -153,7 +153,7 @@ function ChatComponent() {
               <div className={`${idx % 2 === 0 ? 'items-start' : 'items-end'} flex flex-col max-w-[80%]`}>
                 {/* Username display */}
                 <div className={`text-xs text-gray-600 mb-1 ${idx % 2 === 0 ? 'text-left' : 'text-right'}`}>
-                  {msg.username} {msg.timestamp}
+                  {msg.username}
                 </div>
                 {/* Message bubble */}
                 <span className={`${idx % 2 === 0 ? 'bg-white text-gray-800' : 'bg-green-500 text-white'} rounded-2xl px-4 py-2 shadow-md break-words`}>

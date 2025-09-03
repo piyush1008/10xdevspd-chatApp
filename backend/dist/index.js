@@ -72,6 +72,12 @@ let allSocket = [];
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.get("/room/:id/exists", (req, res) => {
+    const roomId = req.params.id;
+    const exists = allSocket.some((u) => u.roomID === roomId);
+    console.log(`room exist ${exists}`);
+    return res.status(200).json({ exists });
+});
 app.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password, email } = req.body;
@@ -210,7 +216,7 @@ wss.on("connection", (socket) => {
             const messageWithUsername = {
                 message: msg.payload.message,
                 username: currentUsername,
-                timestamp: new Date().toLocaleTimeString()
+                timestamp: new Date().toISOString()
             };
             for (let i = 0; i < allSocket.length; i++) {
                 if (allSocket[i].roomID == currentUserRoom) {

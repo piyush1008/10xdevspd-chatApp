@@ -44,6 +44,13 @@ app.use(express.json());
 app.use(cors());
 
 
+app.get("/room/:id/exists", (req, res) => {
+    const roomId = req.params.id;
+    const exists = allSocket.some((u) => u.roomID === roomId);
+    console.log(`room exist ${exists}`)
+    return res.status(200).json({ exists });
+});
+
 app.post("/signup",async (req,res)=>{
     try {
         const {username, password, email}=req.body;
@@ -212,7 +219,7 @@ wss.on("connection",(socket)=>{
             const messageWithUsername = {
                 message: msg.payload.message,
                 username: currentUsername,
-                timestamp: new Date().toLocaleTimeString()
+                timestamp: new Date().toISOString()
             };
 
             for(let i=0;i<allSocket.length;i++)

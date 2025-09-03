@@ -6,12 +6,32 @@ import { useAuth } from "../context/AuthContext";
 export default function JoinChat(){
     const [joinRoomID, setJoinRoomId]=useState("");
     const [error, setError] = useState("");
+    const [checking, setChecking] = useState(false);
     const navigate=useNavigate();
     const { isAuthenticated } = useAuth();
 
     // Redirect if user is not authenticated
     if (!isAuthenticated) {
         return <Navigate to="/signin" replace />;
+    }
+
+    const validateRoomAndNavigate = async () => {
+        try {
+            setChecking(true);
+            const res = await fetch(`http://localhost:3000/room/${encodeURIComponent(joinRoomID.trim())}/exists`);
+            const data = await res.json();
+            if (data?.exists) {
+                navigate(`/chat/${joinRoomID.trim()}`);
+            } else {
+                // room doesn't exist → route to home
+                navigate("/");
+            }
+        } catch (e) {
+            // on error also route to home as safe fallback
+            navigate("/");
+        } finally {
+            setChecking(false);
+        }
     }
 
     const handleJoinRoom = () => {
@@ -26,8 +46,7 @@ export default function JoinChat(){
         }
 
         setError("");
-        // Navigate to chat component with the room ID
-        navigate(`/chat/${joinRoomID.trim()}`);
+        validateRoomAndNavigate();
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -87,9 +106,10 @@ export default function JoinChat(){
                     {/* Join Button */}
                     <button
                         onClick={handleJoinRoom}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:scale-[1.02]"
+                        disabled={checking}
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Join Room
+                        {checking ? 'Checking...' : 'Join Room'}
                     </button>
 
                     {/* Back to Home */}
