@@ -212,7 +212,7 @@ wss.on("connection",(socket)=>{
             const messageWithUsername = {
                 message: msg.payload.message,
                 username: currentUsername,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toLocaleTimeString()
             };
 
             for(let i=0;i<allSocket.length;i++)

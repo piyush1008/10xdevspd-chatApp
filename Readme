@@ -3,3 +3,5 @@ make a UI more cleaner [Done]
 
 1.Create a options to let user see all the participants in a room.\
 2.Right now we are storing user data , in the localstorage to fetch the username and show in the chat , Is this a safe approach or can we implement something else
+3. Is the user is logged in and click on join a room and put some random number , then we need to check whether the roomid mention by user is correct 
+so may be we need to create a endpoint to check the roomid is available or not
