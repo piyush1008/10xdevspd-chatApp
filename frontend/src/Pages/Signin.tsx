@@ -65,7 +65,7 @@ export default function Signin() {
             
             console.log(result);
             localStorage.setItem("token", result.data.token)
-            login(result.data.token)
+            login(result.data.token, result.data.user)
             navigate("/")
             
         } catch (error) {

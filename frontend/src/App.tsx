@@ -16,12 +16,11 @@ function App() {
         <Navbar />
         <Routes>
             <Route path="/chat" element={<ChatComponent />} />
+            <Route path="/chat/:roomId" element={<ChatComponent />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<HomeComponent />} />
-            <Route path="/joinChat" element={<JoinChat />} />
-
+            <Route path="/join" element={<JoinChat />} />
             <Route path="/signin" element={<Signin />} />
-
         </Routes>
       </AuthProvider>
     

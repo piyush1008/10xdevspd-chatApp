@@ -84,13 +84,20 @@ app.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
         }
         const hashpassword = yield bcrypt_1.default.hash(password, 10);
-        yield UserSchema_1.user.create({
+        const newUser = yield UserSchema_1.user.create({
             username,
             password: hashpassword,
             email
         });
+        const token = jwt.sign({ _id: newUser._id }, "mysecretjson");
         return res.status(200).json({
-            mesage: "sinup done successfully"
+            mesage: "sinup done successfully",
+            token,
+            user: {
+                _id: newUser._id,
+                username: newUser.username,
+                email: newUser.email
+            }
         });
     }
     catch (error) {
@@ -111,8 +118,7 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 message: "Please sign up first"
             });
         }
-        const hashpassword = yield bcrypt_1.default.hash(password, 10);
-        const passwordCompare = yield bcrypt_1.default.compare(password, hashpassword);
+        const passwordCompare = yield bcrypt_1.default.compare(password, result.password);
         if (!passwordCompare) {
             return res.status(401).json({
                 mesage: "password incorrect"
@@ -122,7 +128,12 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(token);
         return res.status(200).json({
             mesage: "sigin  done successfully",
-            token
+            token,
+            user: {
+                _id: result._id,
+                username: result.username,
+                email: result.email
+            }
         });
     }
     catch (error) {
@@ -131,7 +142,37 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 }));
-app.post("/me", (req, res) => {
+app.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.body.token;
+    if (!token) {
+        return res.status(401).json({
+            message: "please login first"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, "mysecretjson");
+        const userData = yield UserSchema_1.user.findById(decoded._id);
+        if (!userData) {
+            return res.status(401).json({
+                message: "User not found"
+            });
+        }
+        return res.status(200).json({
+            message: "user is already logged in",
+            user: {
+                _id: userData._id,
+                username: userData.username,
+                email: userData.email
+            }
+        });
+    }
+    catch (error) {
+        return res.status(401).json({
+            message: "Invalid token"
+        });
+    }
+}));
+app.post("/logout", (req, res) => {
     const token = req.body.token;
     if (!token) {
         return res.status(401).json({
@@ -150,7 +191,7 @@ wss.on("connection", (socket) => {
         console.log(JSON.stringify(msg));
         if (msg.type === "join") {
             console.log(`user joined room ${msg.payload.roomID}`);
-            allSocket.push({ socket, roomID: msg.payload.roomID });
+            allSocket.push({ socket, roomID: msg.payload.roomID, username: msg.payload.username });
         }
         if (msg.type === "chat") {
             //if the user is sending a text or chat , then find the currentRoom of that user, now 
@@ -158,17 +199,24 @@ wss.on("connection", (socket) => {
             // const currentUserRoom=allSocket.find((x)=> x.socket===socket);
             // console.log( `currentUserRoom is ${JSON.stringify(currentUserRoom)}`)
             let currentUserRoom = null;
+            let currentUsername = null;
             for (let i = 0; i < allSocket.length; i++) {
                 if (allSocket[i].socket === socket) {
                     currentUserRoom = allSocket[i].roomID;
+                    currentUsername = allSocket[i].username;
                 }
             }
             console.log(`user joined room ${msg.payload.message}`);
             console.log(`current user room is ${currentUserRoom}`);
+            const messageWithUsername = {
+                message: msg.payload.message,
+                username: currentUsername,
+                timestamp: new Date().toISOString()
+            };
             for (let i = 0; i < allSocket.length; i++) {
                 if (allSocket[i].roomID == currentUserRoom) {
                     // currentUserRoom?.socket.send(msg.payload.message)
-                    allSocket[i].socket.send(msg.payload.message);
+                    allSocket[i].socket.send(JSON.stringify(messageWithUsername));
                 }
             }
         }

@@ -1,6 +1,6 @@
 
 interface ButtonProps{
-    isLoading: boolean, 
+    isLoading?: boolean, 
     text: string 
 }
 

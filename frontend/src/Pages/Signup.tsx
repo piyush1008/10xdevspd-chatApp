@@ -82,7 +82,7 @@ export default function Signup() {
             // If backend returns token on signup, log the user in and go home
             if (res.data?.token) {
                 localStorage.setItem("token", res.data.token);
-                login(res.data.token);
+                login(res.data.token, res.data.user);
                 navigate("/");
                 return;
             }
