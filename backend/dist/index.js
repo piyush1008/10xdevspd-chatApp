@@ -52,6 +52,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt = __importStar(require("jsonwebtoken"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
+const RoomSchema_1 = __importDefault(require("./schema/RoomSchema"));
 const wss = new ws_1.WebSocketServer({ port: 8080 });
 let usercount = 0;
 // let allSocke={};
@@ -77,6 +78,23 @@ app.get("/room/:id/exists", (req, res) => {
     const exists = allSocket.some((u) => u.roomID === roomId);
     console.log(`room exist ${exists}`);
     return res.status(200).json({ exists });
+});
+app.post("/getAllParticipants", (req, res) => {
+    const { roomId } = req.body;
+    console.log(`search roomid ${roomId}`);
+    const exists = allSocket.some((u) => u.roomID === roomId);
+    if (!exists) {
+        return res.status(401).json({
+            message: "NO such room id exists"
+        });
+    }
+    const result = allSocket.filter((u) => u.roomID === roomId);
+    const participant = [];
+    for (let i = 0; i < result.length; i++) {
+        participant.push(result[i].username);
+    }
+    console.log(`result ${participant}`);
+    return res.status(200).json({ participant });
 });
 app.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -139,6 +157,32 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 username: result.username,
                 email: result.email
             }
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+}));
+// app.get("/",(req,res)=>{
+//     const
+// })
+app.post("/getAllParticipant", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { roomID } = req.body;
+        console.log(`roomID is ${roomID}`);
+        const response = yield RoomSchema_1.default.find({
+            roomID: roomID
+        });
+        if (!response) {
+            return res.status(401).json({
+                message: "no users found in this roomID"
+            });
+        }
+        console.log(`the result is ${response}`);
+        return res.status(200).json({
+            mesage: "all users fetch successfully",
         });
     }
     catch (error) {
@@ -224,6 +268,7 @@ wss.on("connection", (socket) => {
                     allSocket[i].socket.send(JSON.stringify(messageWithUsername));
                 }
             }
+            // console.log(`allsocket is ${JSON.stringify(allSocket)}`)
         }
     });
 });

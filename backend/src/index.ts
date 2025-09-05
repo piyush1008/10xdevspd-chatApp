@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import cors from "cors";
 import { DB } from "./db";
+import room from "./schema/RoomSchema";
 
 const wss=new WebSocketServer({port:8080})
 
@@ -49,6 +50,27 @@ app.get("/room/:id/exists", (req, res) => {
     const exists = allSocket.some((u) => u.roomID === roomId);
     console.log(`room exist ${exists}`)
     return res.status(200).json({ exists });
+});
+
+
+app.post("/getAllParticipants", (req, res) => {
+    const {roomId} = req.body
+    console.log(`search roomid ${roomId}`)
+    const exists = allSocket.some((u) => u.roomID === roomId);
+    if(!exists)
+    {
+        return res.status(401).json({
+            message: "NO such room id exists"
+        })
+    }
+    const result=allSocket.filter((u)=> u.roomID===roomId)
+    const participant=[];
+    for(let i=0;i<result.length;i++)
+    {
+        participant.push(result[i].username)
+    }
+    console.log(`result ${participant}`)
+    return res.status(200).json({ participant });
 });
 
 app.post("/signup",async (req,res)=>{
@@ -129,6 +151,36 @@ app.post("/signin",async (req,res)=>{
     }
 })
 
+// app.get("/",(req,res)=>{
+//     const
+// })
+
+
+app.post("/getAllParticipant",async (req,res)=>{
+    try {
+        const {roomID}=req.body;
+        console.log(`roomID is ${roomID}`)
+        const response=await room.find({
+            roomID:roomID
+        })
+        if(!response)
+        {
+            return res.status(401).json({
+                message: "no users found in this roomID"
+            })
+        }
+        console.log(`the result is ${response}`)
+        
+        return res.status(200).json({
+            mesage: "all users fetch successfully",
+        })
+
+    } catch (error:any) {
+        return res.status(500).json({
+            message: error.mesage
+        })
+    }
+})
 
 
 app.post("/me",async (req,res)=>{
@@ -230,6 +282,8 @@ wss.on("connection",(socket)=>{
                     allSocket[i].socket.send(JSON.stringify(messageWithUsername))
                 }
             }
+
+            // console.log(`allsocket is ${JSON.stringify(allSocket)}`)
             
         }
     })
