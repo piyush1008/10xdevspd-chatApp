@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 interface Message {
   message: string;
@@ -13,6 +14,8 @@ interface Message {
 function ChatComponent() {
   const [socket,setSocket]=useState<WebSocket | null>(null);
   const [roomId, setRoomId]=useState("");
+  const [participant, setParticipants]=useState<String[]>([])
+  const [showParticipant, setshowParticipant]=useState<boolean>(false);
   const [isJoining, setIsJoining] = useState(false);
   const inputRef=useRef<HTMLInputElement>(null);
   const navigate=useNavigate();
@@ -91,8 +94,50 @@ function ChatComponent() {
     );
   }
 
-  console.log("coding ran till here")
+  const sendMessage=()=>{
+      console.log("button clicked");
+      const message=inputRef.current?.value || "";
+      if (!message.trim()) return;
+      console.log(message);
+      socket?.send(JSON.stringify({
+        type:"chat",
+        payload:{
+          "message":message
+        }
+      }));
+      if (inputRef.current) inputRef.current.value="";
+    }
+  
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+};
+
+
+  const showParticipants=async()=>{
+    try {
+      const result=await axios.post("http://localhost:3000/getAllParticipants",{
+        roomId: roomId
+      })
+
+      console.log(result.data.participant);
+      for(let i=0;i<result.data.participant.length;i++)
+      {
+         const u=result.data.participant[i]
+        setParticipants(prev =>[...prev,u])
+      }
+      setshowParticipant(true)
+      
+    } 
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  console.log("coding ran till here")
+  console.log(showParticipant)
   return (
 
     <div className='min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-blue-50'>
@@ -135,6 +180,13 @@ function ChatComponent() {
             >
               Home
             </button>
+
+            <button
+              onClick={showParticipants}
+              className='px-4 py-2 text-sm text-gray-600 hover:text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+            >
+              Show participants
+            </button>
           </div>
         </div>
       </div>
@@ -164,26 +216,20 @@ function ChatComponent() {
           ))}
         </div>
       </div>
-
+      
       <div className='fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur border-t border-gray-200'>
         <div className='max-w-3xl mx-auto p-3 sm:p-4 flex items-center gap-2'>
-          <input ref={inputRef} className='flex-1 outline-none bg-white border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent transition' type="text" placeholder="Enter your message..." />
-          <button onClick={()=>{
-            console.log("button clicked");
-            const message=inputRef.current?.value || "";
-            if (!message.trim()) return;
-            console.log(message);
-            socket?.send(JSON.stringify({
-              type:"chat",
-              payload:{
-                "message":message
-              }
-            }));
-            if (inputRef.current) inputRef.current.value="";
-          }} className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl shadow-md transition cursor-pointer'>Send</button> 
+          <input ref={inputRef}   onKeyPress={handleKeyPress} className='flex-1 outline-none bg-white border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent transition' type="text" placeholder="Enter your message..." />
+          <button onClick={sendMessage} className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl shadow-md transition cursor-pointer'>Send</button> 
         </div>
         
       </div>
+      {showParticipant}
+      {showParticipant &&  participant.map(ele=> (
+        <div>
+          {ele}
+        </div>
+      ))}
     </div>
     
   )
