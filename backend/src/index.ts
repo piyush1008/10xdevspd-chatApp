@@ -50,7 +50,7 @@ app.use(cors());
 const server = http.createServer(app);
 
 // Create WebSocket server
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({ server, path: "/ws" });
 
 console.log(`ws server is ${JSON.stringify(wss)}`);
 
