@@ -1,5 +1,3 @@
-
-
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,6 +18,8 @@ function ChatComponent() {
   const inputRef=useRef<HTMLInputElement>(null);
   const navigate=useNavigate();
   const { roomId: urlRoomId } = useParams<{ roomId: string }>();
+
+  const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
 
   function generateRandomString() {
     return Math.random().toString(36).substring(2, 7);
@@ -118,7 +118,7 @@ function ChatComponent() {
 
   const showParticipants=async()=>{
     try {
-      const result=await axios.post("http://localhost:3000/getAllParticipants",{
+      const result=await axios.post(`${API_URL}/getAllParticipants`,{
         roomId: roomId
       })
 

@@ -13,9 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DB = DB;
+require('dotenv').config();
 const mongoose_1 = __importDefault(require("mongoose"));
 function DB() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(process.env.DATABASE_URL);
         yield mongoose_1.default.connect("mongodb+srv://piyushsunnyst:piyushsunnyst@cluster0.uravwxx.mongodb.net/chatapp").then(() => {
             console.log("DB connected successfully");
         }).catch((err) => {

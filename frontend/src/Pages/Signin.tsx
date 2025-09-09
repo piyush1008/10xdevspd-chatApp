@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../component/Button";
@@ -5,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signin() {
+    const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
     const navigate=useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
@@ -58,7 +60,8 @@ export default function Signin() {
         try {
             console.log("Signin attempt:", formData);
             console.log(`email is ${formData.email} and password is ${formData.password}`)
-            const result=await axios.post("http://localhost:3000/signin",{
+            // console.log(`${process.env.URL}/signin`)
+            const result=await axios.post(`${API_URL}/signin`,{
                 email: formData.email,
                 password:formData.password
             })

@@ -17,6 +17,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
@@ -29,7 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserData = async (token: string) => {
     try {
-      const response = await fetch("http://localhost:3000/me", {
+      const response = await fetch(`${API_URL}/me`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

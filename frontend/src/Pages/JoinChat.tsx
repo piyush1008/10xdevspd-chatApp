@@ -10,6 +10,8 @@ export default function JoinChat(){
     const navigate=useNavigate();
     const { isAuthenticated } = useAuth();
 
+    const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+
     // Redirect if user is not authenticated
     if (!isAuthenticated) {
         return <Navigate to="/signin" replace />;
@@ -18,7 +20,7 @@ export default function JoinChat(){
     const validateRoomAndNavigate = async () => {
         try {
             setChecking(true);
-            const res = await fetch(`http://localhost:3000/room/${encodeURIComponent(joinRoomID.trim())}/exists`);
+            const res = await fetch(`${API_URL}/room/${encodeURIComponent(joinRoomID.trim())}/exists`);
             const data = await res.json();
             if (data?.exists) {
                 navigate(`/chat/${joinRoomID.trim()}`);

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../component/Button";
@@ -5,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
+    const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
     const navigate=useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
@@ -72,7 +74,7 @@ export default function Signup() {
         try {
             console.log("Form submitted:", formData);
 
-            const res = await axios.post("http://localhost:3000/signup",{
+            const res = await axios.post(`${API_URL}/signup`,{
                 username:formData.username,
                 email:formData.email,
                 password: formData.password
