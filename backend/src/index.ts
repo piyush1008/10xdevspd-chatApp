@@ -52,7 +52,7 @@ const server = http.createServer(app);
 // Create WebSocket server
 const wss = new WebSocketServer({ server });
 
-console.log(`ws server is ${wss}`);
+console.log(`ws server is ${JSON.stringify(wss)}`);
 
 
 app.get("/room/:id/exists", (req, res) => {
