@@ -6,10 +6,13 @@ import * as jwt from "jsonwebtoken";
 import cors from "cors";
 import { DB } from "./db";
 import room from "./schema/RoomSchema";
+import http from "http";
 
-const wss=new WebSocketServer({port:8080})
+// const wss=new WebSocketServer({port:8080})
 
 let usercount=0;
+
+
 
 interface User{
     socket: WebSocket,
@@ -43,6 +46,13 @@ const app=express();
 
 app.use(express.json());
 app.use(cors());
+
+const server = http.createServer(app);
+
+// Create WebSocket server
+const wss = new WebSocketServer({ server });
+
+console.log(`ws server is ${wss}`);
 
 
 app.get("/room/:id/exists", (req, res) => {

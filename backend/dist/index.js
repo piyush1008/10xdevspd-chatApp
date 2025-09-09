@@ -53,7 +53,8 @@ const jwt = __importStar(require("jsonwebtoken"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
 const RoomSchema_1 = __importDefault(require("./schema/RoomSchema"));
-const wss = new ws_1.WebSocketServer({ port: 8080 });
+const http_1 = __importDefault(require("http"));
+// const wss=new WebSocketServer({port:8080})
 let usercount = 0;
 // let allSocke={};
 // /*
@@ -73,6 +74,9 @@ let allSocket = [];
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+const server = http_1.default.createServer(app);
+// Create WebSocket server
+const wss = new ws_1.WebSocketServer({ server });
 app.get("/room/:id/exists", (req, res) => {
     const roomId = req.params.id;
     const exists = allSocket.some((u) => u.roomID === roomId);
