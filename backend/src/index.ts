@@ -301,9 +301,13 @@ wss.on("connection",(socket)=>{
 
 })
 
+server.listen(process.env.PORT || 8080, () => {
+    console.log(`Server (HTTP + WS) running on port ${process.env.PORT || 8080}`);
+  });
 
-app.listen(process.env.PORT,()=>{
-    console.log(`Server is running on port ${process.env.PORT}`)
-})
+
+// app.listen(process.env.PORT,()=>{
+//     console.log(`Server is running on port ${process.env.PORT}`)
+// })
 
 
