@@ -40,8 +40,8 @@ function ChatComponent() {
     // Only create WebSocket connection if user is authenticated
     if (!isAuthenticated || !user) return;
 
-    const ws=new WebSocket("ws://localhost:8080");
-
+    const ws=new WebSocket("wss://one0xdevspd-chatapp.onrender.com");
+//wss://one0xdevspd-chatapp.onrender.com
     // Use room ID from URL if provided, otherwise generate a new one
     const finalRoomId = urlRoomId || generateRandomString();
     setRoomId(finalRoomId);
