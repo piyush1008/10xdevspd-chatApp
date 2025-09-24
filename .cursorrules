@@ -1,0 +1,140 @@
+# 10xDevSpd Chat Application - Project Intelligence
+
+## Project Overview
+This is a real-time chat application built with React frontend and Node.js backend, featuring WebSocket communication and room-based messaging.
+
+## Key Implementation Patterns
+
+### Authentication Flow
+- JWT-based authentication with localStorage persistence
+- AuthContext provides global authentication state
+- Token validation through `/me` endpoint
+- Automatic redirect to signin for unauthenticated users
+
+### WebSocket Communication
+- Native WebSocket API on frontend
+- WebSocket server integrated with Express
+- Room-based message broadcasting
+- Message types: "join" and "chat"
+
+### Room Management
+- Auto-generated room IDs (5-character random strings)
+- Room existence validation via `/room/:id/exists`
+- Participant tracking in memory array
+- Room ID copying to clipboard functionality
+
+### UI/UX Patterns
+- Tailwind CSS for styling with gradient backgrounds
+- Responsive design with mobile-first approach
+- Message bubbles with alternating alignment
+- Loading states and error handling
+- Modern, clean interface design
+
+## Critical Code Paths
+
+### Frontend Authentication
+```typescript
+// AuthContext manages global auth state
+const { isAuthenticated, user, login, logout } = useAuth();
+
+// Protected routes check authentication
+useEffect(() => {
+  if (!isAuthenticated) {
+    navigate("/signin");
+  }
+}, [isAuthenticated, navigate]);
+```
+
+### WebSocket Connection
+```typescript
+// WebSocket connection with room joining
+const ws = new WebSocket("wss://one0xdevspd-chatapp.onrender.com/ws");
+ws.send(JSON.stringify({
+  type: "join",
+  payload: { roomID: finalRoomId, username: user.username }
+}));
+```
+
+### Backend Message Broadcasting
+```typescript
+// Room-based message broadcasting
+for(let i = 0; i < allSocket.length; i++) {
+  if(allSocket[i].roomID == currentUserRoom) {
+    allSocket[i].socket.send(JSON.stringify(messageWithUsername));
+  }
+}
+```
+
+## Known Challenges
+
+### Security Considerations
+- localStorage usage for sensitive data
+- No refresh token mechanism
+- Basic input validation
+- JWT secret hardcoded ("mysecretjson")
+
+### Scalability Limitations
+- In-memory connection storage
+- No message persistence
+- Single server architecture
+- No connection pooling
+
+### Technical Debt
+- Console.log statements in production code
+- Inconsistent error handling
+- TypeScript types could be stricter
+- No comprehensive logging system
+
+## Development Preferences
+
+### Code Style
+- Use TypeScript for type safety
+- Prefer functional components with hooks
+- Use Tailwind CSS for styling
+- Implement responsive design patterns
+
+### Error Handling
+- Always check authentication status
+- Handle WebSocket connection failures
+- Provide user feedback for errors
+- Implement loading states
+
+### Performance Considerations
+- Minimize re-renders with useMemo/useCallback
+- Clean up WebSocket connections on unmount
+- Optimize API calls with proper caching
+- Use efficient data structures for room management
+
+## Common Patterns
+
+### Component Structure
+- Use custom hooks for complex logic
+- Implement proper cleanup in useEffect
+- Use refs for DOM manipulation
+- Follow React best practices for state management
+
+### API Integration
+- Use axios for HTTP requests
+- Implement proper error handling
+- Use environment variables for API URLs
+- Follow RESTful conventions
+
+### State Management
+- Use Context API for global state
+- Local state for component-specific data
+- Proper state updates with functional updates
+- Avoid unnecessary state dependencies
+
+## Deployment Notes
+- Application deployed on Render platform
+- WebSocket URL: wss://one0xdevspd-chatapp.onrender.com/ws
+- Both frontend and backend containerized
+- Environment variables configured for production
+
+## Future Considerations
+- Implement message history persistence
+- Add file sharing capabilities
+- Implement typing indicators
+- Add comprehensive testing
+- Consider implementing refresh tokens
+- Add proper logging system
