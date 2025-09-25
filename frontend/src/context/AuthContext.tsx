@@ -17,7 +17,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+  const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://one0xdevspd-chatapp.onrender.com';
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 

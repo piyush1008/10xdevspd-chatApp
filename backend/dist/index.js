@@ -73,10 +73,21 @@ let allSocket = [];
 (0, db_1.DB)();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        'http://localhost:5173', // Vite dev server
+        'http://localhost:3000', // Alternative local dev
+        'https://10xdevspd-chat-app.vercel.app', // Vercel deployment
+        'https://one0xdevspd-chatapp.onrender.com' // Render deployment
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 const server = http_1.default.createServer(app);
 // Create WebSocket server
-const wss = new ws_1.WebSocketServer({ server });
+const wss = new ws_1.WebSocketServer({ server, path: "/ws" });
+console.log(`ws server is ${JSON.stringify(wss)}`);
 app.get("/room/:id/exists", (req, res) => {
     const roomId = req.params.id;
     const exists = allSocket.some((u) => u.roomID === roomId);
@@ -275,7 +286,16 @@ wss.on("connection", (socket) => {
             // console.log(`allsocket is ${JSON.stringify(allSocket)}`)
         }
     });
+    // Handle user disconnection
+    socket.on("close", () => {
+        console.log("User disconnected");
+        // Remove user from allSocket array when they disconnect
+        allSocket = allSocket.filter((u) => u.socket !== socket);
+    });
 });
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+server.listen(process.env.PORT || 8080, () => {
+    console.log(`Server (HTTP + WS) running on port ${process.env.PORT || 8080}`);
 });
+// app.listen(process.env.PORT,()=>{
+//     console.log(`Server is running on port ${process.env.PORT}`)
+// })

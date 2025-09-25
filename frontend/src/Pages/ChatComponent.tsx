@@ -20,7 +20,7 @@ function ChatComponent() {
   const navigate=useNavigate();
   const { roomId: urlRoomId } = useParams<{ roomId: string }>();
 
-  const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+  const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://one0xdevspd-chatapp.onrender.com';
 
   function generateRandomString() {
     return Math.random().toString(36).substring(2, 7);

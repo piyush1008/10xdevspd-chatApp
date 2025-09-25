@@ -6,7 +6,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signin() {
-    const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://one0xdevspd-chatapp.onrender.com';
     const navigate=useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({

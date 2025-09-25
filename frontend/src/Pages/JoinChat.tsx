@@ -9,7 +9,7 @@ export default function JoinChat(){
     const navigate=useNavigate();
     const { isAuthenticated } = useAuth();
 
-    const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://one0xdevspd-chatapp.onrender.com';
 
     // Redirect if user is not authenticated
     if (!isAuthenticated) {
