@@ -298,6 +298,12 @@ wss.on("connection",(socket)=>{
         }
     })
 
+    // Handle user disconnection
+    socket.on("close", () => {
+        console.log("User disconnected");
+        // Remove user from allSocket array when they disconnect
+        allSocket = allSocket.filter((u) => u.socket !== socket);
+    });
 
 })
 

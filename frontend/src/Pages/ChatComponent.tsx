@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import ParticipantsSidebar from './ParticipantsSidebar';
 
 interface Message {
   message: string;
@@ -12,8 +13,8 @@ interface Message {
 function ChatComponent() {
   const [socket,setSocket]=useState<WebSocket | null>(null);
   const [roomId, setRoomId]=useState("");
-  const [participant, setParticipants]=useState<String[]>([])
-  const [showParticipant, setshowParticipant]=useState<boolean>(false);
+  const [participants, setParticipants]=useState<string[]>([])
+  const [showParticipants, setShowParticipants]=useState<boolean>(false);
   const [isJoining, setIsJoining] = useState(false);
   const inputRef=useRef<HTMLInputElement>(null);
   const navigate=useNavigate();
@@ -116,35 +117,43 @@ function ChatComponent() {
 };
 
 
-  const showParticipants=async()=>{
+  const fetchParticipants = async () => {
     try {
-      const result=await axios.post(`${API_URL}/getAllParticipants`,{
+      const result = await axios.post(`${API_URL}/getAllParticipants`, {
         roomId: roomId
-      })
+      });
 
       console.log(result.data.participant);
-      for(let i=0;i<result.data.participant.length;i++)
-      {
-         const u=result.data.participant[i]
-        setParticipants(prev =>[...prev,u])
-      }
-      setshowParticipant(true)
+      // Clear existing participants and set new ones to prevent duplicates
+      setParticipants(result.data.participant || []);
+      setShowParticipants(true);
       
     } 
     catch (error) {
-      console.log(error)
+      console.log(error);
+      // Handle error - could show a toast notification
+    }
+  }
+
+  const toggleParticipants = () => {
+    if (showParticipants) {
+      setShowParticipants(false);
+    } else {
+      fetchParticipants();
     }
   }
 
   console.log("coding ran till here")
-  console.log(showParticipant)
+  console.log(showParticipants)
   return (
 
-    <div className='min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-blue-50'>
-      {/* Room Header */}
-      <div className='bg-white/80 backdrop-blur border-b border-gray-200 p-4'>
-        <div className='max-w-3xl mx-auto flex items-center justify-between'>
-          <div className='flex items-center gap-3'>
+    <div className='min-h-screen flex bg-gradient-to-br from-green-50 to-blue-50'>
+      {/* Main Chat Area */}
+      <div className='flex-1 flex flex-col'>
+        {/* Room Header */}
+        <div className='bg-white/80 backdrop-blur border-b border-gray-200 p-4'>
+          <div className='max-w-3xl mx-auto flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
             <h1 className='text-xl font-semibold text-gray-900'>
               {isJoining ? 'Joined Room' : 'New Room'}
             </h1>
@@ -166,8 +175,8 @@ function ChatComponent() {
                 </svg>
               </button>
             </div>
-          </div>
-          <div className='flex gap-2'>
+            </div>
+            <div className='flex gap-2'>
             <button
               onClick={() => navigate('/join')}
               className='px-4 py-2 text-sm text-green-600 hover:text-green-700 border border-green-300 rounded-lg hover:bg-green-50 transition-colors'
@@ -182,16 +191,16 @@ function ChatComponent() {
             </button>
 
             <button
-              onClick={showParticipants}
+              onClick={toggleParticipants}
               className='px-4 py-2 text-sm text-gray-600 hover:text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
             >
-              Show participants
+              {showParticipants ? 'Hide Participants' : 'Show Participants'}
             </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className='flex-1 overflow-y-auto p-4 sm:p-6'>
+        <div className='flex-1 overflow-y-auto p-4 sm:p-6'>
         <div className='max-w-3xl mx-auto space-y-3'>
           {messages.length === 0 && (
             <div className='text-center py-8'>
@@ -214,22 +223,25 @@ function ChatComponent() {
               </div>
             </div>
           ))}
+          </div>
         </div>
-      </div>
-      
-      <div className='fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur border-t border-gray-200'>
+        
+        <div className='bg-white/80 backdrop-blur border-t border-gray-200'>
         <div className='max-w-3xl mx-auto p-3 sm:p-4 flex items-center gap-2'>
           <input ref={inputRef}   onKeyPress={handleKeyPress} className='flex-1 outline-none bg-white border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent transition' type="text" placeholder="Enter your message..." />
           <button onClick={sendMessage} className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl shadow-md transition cursor-pointer'>Send</button> 
         </div>
-        
       </div>
-      {showParticipant}
-      {showParticipant &&  participant.map(ele=> (
-        <div>
-          {ele}
-        </div>
-      ))}
+      </div>
+
+      {/* Participants Sidebar */}
+      <ParticipantsSidebar
+        isOpen={showParticipants}
+        onClose={() => setShowParticipants(false)}
+        participants={participants}
+        roomId={roomId}
+        onRefresh={fetchParticipants}
+      />
     </div>
     
   )

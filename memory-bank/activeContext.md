@@ -6,7 +6,8 @@ The chat application is in a functional state with core features implemented. Th
 1. **Feature Completion**: All basic chat functionality is working
 2. **UI/UX Improvements**: Clean, modern interface has been implemented
 3. **Room Validation**: Room existence checking is implemented
-4. **Participant Management**: Users can view room participants
+4. **Participant Management**: Users can view room participants with a dedicated sidebar
+5. **Sidebar Implementation**: Modern, responsive participants sidebar is now fully functional
 
 ## Recent Changes
 - ✅ Implemented room existence validation endpoint (`/room/:id/exists`)
@@ -15,6 +16,11 @@ The chat application is in a functional state with core features implemented. Th
 - ✅ Improved authentication flow with proper token handling
 - ✅ Added room ID copying functionality
 - ✅ Implemented responsive design for mobile and desktop
+- ✅ **NEW**: Created ParticipantsSidebar component with modern UI
+- ✅ **NEW**: Implemented sidebar toggle functionality in ChatComponent
+- ✅ **NEW**: Added participant state management to prevent duplicates
+- ✅ **NEW**: Enhanced backend with WebSocket disconnection handling
+- ✅ **NEW**: Added refresh functionality to participants list
 
 ## Next Steps
 Based on the README file, the following items are identified for future development:

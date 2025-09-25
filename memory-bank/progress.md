@@ -21,7 +21,8 @@
    - Room existence validation endpoint
    - Join existing rooms by room ID
    - Room ID copying to clipboard
-   - Participant display functionality
+   - Participant display functionality with sidebar
+   - Real-time participant list updates
 
 4. **User Interface**
    - Clean, modern design with Tailwind CSS
@@ -29,6 +30,8 @@
    - Loading states and error handling
    - Navigation between different pages
    - Professional chat interface with message bubbles
+   - Participants sidebar with modern design
+   - Responsive sidebar with backdrop overlay
 
 5. **Backend API**
    - RESTful API endpoints for authentication
@@ -36,6 +39,7 @@
    - WebSocket server integration
    - MongoDB database integration
    - CORS configuration
+   - Participant management with disconnection handling
 
 ## What's Left to Build
 
@@ -74,8 +78,9 @@
 - User authentication and session management
 - Real-time chat messaging
 - Room creation and joining
-- Participant management
+- Participant management with sidebar
 - Responsive UI design
+- Participants sidebar with refresh functionality
 
 ### 🟡 Partially Implemented
 - Room validation (basic implementation exists)
