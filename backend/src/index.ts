@@ -97,6 +97,16 @@ const server = http.createServer(app);
 // Create WebSocket server
 const wss = new WebSocketServer({ server, path: "/ws" });
 
+/*
+
+Instead of running Express and WebSockets separately:
+
+One HTTP server is shared between Express and WebSocket.
+
+WebSocket server listens at /ws path.
+
+*/
+
 console.log(`ws server is ${JSON.stringify(wss)}`);
 
 
