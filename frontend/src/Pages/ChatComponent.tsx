@@ -209,20 +209,23 @@ function ChatComponent() {
               </p>
             </div>
           )}
-          {messages.map((msg, idx)=> (
-            <div key={idx} className={`flex ${idx % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
-              <div className={`${idx % 2 === 0 ? 'items-start' : 'items-end'} flex flex-col max-w-[80%]`}>
-                {/* Username display */}
-                <div className={`text-xs text-gray-600 mb-1 ${idx % 2 === 0 ? 'text-left' : 'text-right'}`}>
-                  {msg.username}
+          {messages.map((msg, idx)=> {
+            const isSelf = msg.username === user.username;
+            return (
+              <div key={idx} className={`flex ${isSelf ? 'justify-end' : 'justify-start'}`}>
+                <div className={`${isSelf ? 'items-end' : 'items-start'} flex flex-col max-w-[80%]`}>
+                  {/* Username display */}
+                  <div className={`text-xs text-gray-600 mb-1 ${isSelf ? 'text-right' : 'text-left'}`}>
+                    {msg.username}
+                  </div>
+                  {/* Message bubble */}
+                  <span className={`${isSelf ? 'bg-green-500 text-white' : 'bg-white text-gray-800'} rounded-2xl px-4 py-2 shadow-md break-words`}>
+                    {msg.message}
+                  </span>
                 </div>
-                {/* Message bubble */}
-                <span className={`${idx % 2 === 0 ? 'bg-white text-gray-800' : 'bg-green-500 text-white'} rounded-2xl px-4 py-2 shadow-md break-words`}>
-                  {msg.message}
-                </span>
               </div>
-            </div>
-          ))}
+            )
+          })}
           </div>
         </div>
         

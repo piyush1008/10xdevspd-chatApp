@@ -312,6 +312,17 @@ wss.on("connection",(socket)=>{
         }
 
 
+       /*
+            [
+                {socket: "socket1", roomID: "room1", username: "username1"},
+                {socket: "socket2", roomID: "room2", username: "username2"},
+                {socket: "socket3", roomID: "room3", username: "username3"}
+            ]
+
+
+       */
+
+
         if(msg.type === "chat")
         {
             //if the user is sending a text or chat , then find the currentRoom of that user, now 
