@@ -180,7 +180,7 @@ function ChatComponent() {
   console.log(showParticipants)
   return (
 
-    <div className='min-h-screen flex bg-gradient-to-br from-green-50 to-blue-50'>
+    <div className='h-[100dvh] flex bg-gradient-to-br from-green-50 to-blue-50'>
       {/* Main Chat Area */}
       <div className='flex-1 flex flex-col'>
         {/* Room Header */}
@@ -262,7 +262,7 @@ function ChatComponent() {
             </div>
           </div>
         
-          <div className='bg-white/80 backdrop-blur border-t border-gray-200 relative'>
+          <div className='bg-white/80 backdrop-blur border-t border-gray-200 relative bottom-0 left-0 w-full z-10'>
             <div className='max-w-3xl mx-auto p-3 sm:p-4 flex items-center gap-2'>
               <input ref={inputRef}   onKeyPress={handleKeyPress} className='flex-1 outline-none bg-white border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent transition' type="text" placeholder="Enter your message..." />
               
