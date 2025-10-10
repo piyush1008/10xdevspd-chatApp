@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ParticipantsSidebar from './ParticipantsSidebar';
+import EmojiPicker from 'emoji-picker-react';
+
 
 interface Message {
   message: string;
@@ -232,6 +234,7 @@ function ChatComponent() {
         <div className='bg-white/80 backdrop-blur border-t border-gray-200'>
         <div className='max-w-3xl mx-auto p-3 sm:p-4 flex items-center gap-2'>
           <input ref={inputRef}   onKeyPress={handleKeyPress} className='flex-1 outline-none bg-white border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent transition' type="text" placeholder="Enter your message..." />
+         <EmojiPicker />
           <button onClick={sendMessage} className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-xl shadow-md transition cursor-pointer'>Send</button> 
         </div>
       </div>
