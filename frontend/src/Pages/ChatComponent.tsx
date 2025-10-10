@@ -282,7 +282,7 @@ function ChatComponent() {
         
         {/* Emoji Picker - positioned absolutely */}
         {showEmojiPicker && (
-          <div className='emoji-picker-container absolute bottom-full left-4 mb-2 z-10'>
+          <div className='emoji-picker-container absolute bottom-full right-4 mb-2 z-10'>
             <EmojiPicker 
               onEmojiClick={handleEmojiClick}
               width={300}
